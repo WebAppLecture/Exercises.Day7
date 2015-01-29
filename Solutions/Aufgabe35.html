@@ -1,0 +1,231 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Lösung zur 35. Aufgabe</title>
+<style>
+html, body
+{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: Verdana;
+}
+#list
+{
+	font-size: 12px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 30%;
+	height: 100%;
+	background: #EEE;
+}
+footer
+{
+	font-size: small;
+	text-align: center;
+	width: 70%;
+}
+article
+{
+	width: 70%;
+	padding-left: 50px;
+}
+nav
+{
+	border-bottom: 3px solid #CCC;
+	margin-bottom: 50px;
+	padding-left: 50px;
+}
+nav a
+{
+	cursor: pointer;
+	color: #666;
+	display: inline-block;
+	font-weight: bold;
+	padding: 10px;
+	margin: 0 20px;
+	border-bottom: 3px solid #666;
+	-o-transform: translate(0, 3px);
+}
+nav a:hover
+{
+	color: #F00;
+	border-bottom: 3px solid #0F0;
+}
+#list a
+{
+	display: block;
+	cursor: pointer;
+	text-decoration: underline;
+	color: #666;
+	margin: 10px;
+}
+#list a:hover
+{
+	color: #00F;
+	text-decoration: none;
+}
+label
+{
+	display: block;
+	margin-top: 20px;
+}
+input, textarea, select
+{
+	display: block;
+	width: 300px;
+	padding: 5px;
+	box-sizing: content-box;
+	color: #00F;
+}
+textarea
+{
+	height: 200px;
+}
+button
+{
+	border-radius: 5px;
+	background: #06C;
+	border: 1px solid #666;
+	height: 30px;
+	box-shadow: 2px 2px 2px #666;
+	color: #FFF;
+	font-weight: bold;
+	margin-top: 50px;
+}
+button:hover
+{
+	background: #69C;
+	cursor: pointer;
+}
+button:disabled,button:disabled:hover
+{
+	background: #CCC;
+	cursor: default;
+}
+</style>
+</head>
+<body>
+<nav>
+<a id="new">Neuer Eintrag</a>
+<a id="about">Über</a>
+</nav>
+<article>
+<label>Titel</label>
+<input id="title" />
+<label>Beschreibung</label>
+<textarea id="desc"></textarea>
+<div class="extend">
+<label>Erstellt</label>
+<input type="datetime" id="created" readonly />
+<label>Geändert</label>
+<input type="datetime" id="modified" readonly />
+</div>
+<label>Priorität</label>
+<select id="prio">
+<option>Niedrig</option>
+<option selected>Normal</option>
+<option>Hoch</option>
+</select>
+<button id="add" disabled>Hinzufügen</button>
+<button id="change" class="extend" disabled>Ändern</button>
+<button id="delete" class="extend">Löschen</button>
+</article>
+<aside id="list">
+</aside>
+<footer>&copy; <address style="display: inline;">Florian Rappl</address>. Zuletzt aktualisiert am <time datetime="2012-01-03T10:46Z" style="display: inline;">03.01.2012 um 11:46</time></footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+<script>
+var storage = window.localStorage;
+
+var timestamp = function() {
+	return new Date().getTime();
+};
+
+$(document).ready(function() {
+	$('.extend').hide();
+	refreshList();
+	var priostd = $('#prio').val();
+	
+	$('#new').click(function() {
+		$('#add').show();
+		$('.extend').hide();
+		
+		$('#title').val('');
+		$('#desc').val('');
+		$('#prio').val(priostd);
+		
+		$('#change').attr('data-entry', '');
+	});
+	
+	$('#about').click(function() {
+		alert('Jetzt könnte so ein About-Dialog aufpoppen oder dergleichen...');
+	});
+	
+	$('#title').change(function() {
+		if($(this).val() === '')
+			$('#change,#add').attr('disabled', 'disabled');
+		else
+			$('#change,#add').removeAttr('disabled');
+	});
+	
+	$('#add').click(function() {
+		var data = { };
+		data.title = $('#title').val();
+		data.desc = $('#desc').val();
+		data.created = new Date();
+		data.modified = data.created;
+		data.prio = $('#prio').val();
+		storage.setItem('entry-' + timestamp(), JSON.stringify(data));
+		refreshList();
+	});
+	
+	$('#change').click(function() {
+		var data = { };
+		data.title = $('#title').val();
+		data.desc = $('#desc').val();
+		data.created = new Date($('#created').attr('data-original'));
+		data.modified = new Date();
+		data.prio = $('#prio').val();
+		storage.setItem($('#change').attr('data-entry'), JSON.stringify(data));
+		refreshList();
+	});
+	
+	$('#delete').click(function() {
+		localStorage.removeItem($('#change').attr('data-entry'));
+		refreshList();
+		$('#new').click();
+	});
+});
+
+function refreshList() {
+	var l = storage.length;
+	var list = $('#list').empty();
+	
+	for(var i = l - 1; i >= 0; i--) {
+		var index = storage.key(i);
+		var entry = JSON.parse(storage.getItem(index));
+		
+		$('<a />').attr('data-entry', index).text('[ ' + entry.prio + ' ] ' + entry.title).click(function() {
+			var attr = $(this).attr('data-entry');
+			$('#add').hide();
+			$('.extend').show();
+			
+			var data = JSON.parse(storage.getItem(attr))
+			
+			$('#change').attr('data-entry', attr);
+			$('#title').val(data.title);
+			$('#desc').val(data.desc);
+			$('#created').val(new Date(data.created).toISOString()).attr('data-original', data.created);
+			$('#modified').val(new Date(data.modified).toISOString()).attr('data-original', data.modified);
+			$('#prio').val(data.prio);
+			
+		}).appendTo(list);
+	}
+}
+</script>
+</body>
+</html>

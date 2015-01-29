@@ -1,0 +1,66 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Lösung zur 31. Aufgabe</title>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
+<style>
+label { display: inline-block; margin-right: 10px; width: 190px; font-weight: bold; text-align: right; }
+input[type=submit] { margin-left: 200px; }
+form { margin: 20px; }
+address, time { display: inline; }
+</style>
+</head>
+<body>
+<h1>Benutzerregistrierung</h1>
+<form onforminput="" name="reg" />
+<p><label>Name*</label><input type="text" pattern="[a-zA-Z\-]+,\s?[a-zA-Z]+" required name="name" autofocus /></p>
+<p><label>E-Mail*</label><input type="email" required name="email" /></p>
+<p><label>Telefonnummer</label><input type="tel" name="phone" pattern="\+[0-9]{2}\s?\([0-9]{3}\)\s?[0-9]{4,}" /></p>
+<p><label>Geburtsdatum*</label><input type="date" name="birthday" required /></p>
+<p><label>Leistungspunkte</label><input type="range" min=0 max=180 name="credits" /></p>
+<p><label>Eigene Homepage</label><input type="url" name="homepage" /></p>
+<p><label>Passwort festlegen</label><input type="password" name="pwd" required /></p>
+<p><label>Passwort bestätigen</label><input type="password" name="confirm" required /></p>
+<input type="submit" value="Registrieren" />
+</form>
+<button id="fallback" onclick="fallback();">Fallback-Modus emulieren</button>
+<footer>&copy; <address>Florian Rappl</address>. Zuletzt aktualisiert am <time datetime="2011-12-03T13:50Z">03.12.2011 um 14:50</time></footer>
+<!--Loads jQuery (hosted by Google)-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+<!--Loads jQuery UI (hosted by Google)-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+<!--Here comes our part!-->
+<script>
+$(document).ready(function() {	
+	if( $('input[name=credits]').get(0).type === 'text' ||
+		$('input[name=birthday]').get(0).type === 'text' ) {
+		
+		fallback();
+		
+	}
+});
+
+function fallback() {
+	var range = $('input[name=credits]');
+	var datepicker = $('input[name=birthday]');
+	
+	if(range.length > 0) {
+		
+		var width = range.width();
+		$('<div id="range"></div>').replaceAll(range).css({ 'display' : 'inline-block' }).slider().css('width', width);
+		
+	}
+	
+	if(datepicker.length > 0) {
+	
+		datepicker.get(0).type = 'text';
+		datepicker.datepicker({ dateFormat: 'yy-mm-dd' });
+		
+	}
+	
+	$('#fallback').hide();
+}
+</script>
+</body>
+</html>

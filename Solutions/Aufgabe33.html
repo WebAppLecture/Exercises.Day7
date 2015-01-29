@@ -1,0 +1,64 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Lösung zur 33. Aufgabe</title>
+<style>
+#pictures
+{
+	width: 900px;
+	border: 1px solid #CCC;
+	margin: auto;
+}
+#pictures a
+{
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+	vertical-align: bottom;
+}
+#pictures img
+{
+	padding: 0;
+	margin: 0;
+	border: 0;
+	display: block;
+}
+</style>
+</head>
+<body>
+<div id="pictures"></div>
+<button id="fetchpictures">Noch mehr Bilder holen</button>
+<footer>&copy; <address style="display: inline;">Florian Rappl</address>. Zuletzt aktualisiert am <time datetime="2012-01-03T09:59Z" style="display: inline;">03.01.2012 um 10:59</time></footer>
+<!--Loads jQuery (hosted by Google)-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+<!--Here comes our part!-->
+<script>
+var start = 0;
+
+$(document).ready(function() {	
+	$('#fetchpictures').click(fetchImages);
+	fetchImages();
+});
+
+function fetchImages() {
+	$.getJSON('http://www.flickr.com/services/feeds/photos_public.gne?jsoncallback=?', {
+			tags: "html5",
+			tagmode: "any",
+			format: "json"
+		}, function(data) {
+			var i = start, length = data.items.length;
+			
+			for(; i < start + 3 && i < length; ++i)
+				$('<a/>').attr('href', data.items[i].link).attr('target', 'blank').html('<img src="' + data.items[i].media.m + '" width=300 height=300 />').appendTo('#pictures');
+			
+			start = i;
+			
+			if(i >= length)
+				$('#fetchpictures').hide();
+		}
+	);
+}
+</script>
+</body>
+</html>

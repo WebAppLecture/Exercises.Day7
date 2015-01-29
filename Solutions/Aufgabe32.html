@@ -1,0 +1,56 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Lösung zur 32. Aufgabe</title>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
+</head>
+<body>
+<h1>Simpler jQuery UI Dialogtest</h1>
+<p><button id="modalerDialog">Einen modalen Dialog starten</button></p>
+<p><button id="stdDialog">Nicht-Modalen Dialog starten</button></p>
+<footer>&copy; <address style="display: inline;">Florian Rappl</address>. Zuletzt aktualisiert am <time datetime="2011-12-03T14:07Z" style="display: inline;">03.12.2011 um 15:07</time></footer>
+<!--Loads jQuery (hosted by Google)-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+<!--Loads jQuery UI (hosted by Google)-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+<!--Here comes our part!-->
+<script>
+$(document).ready(function() {	
+
+	//Dialoge erstellen
+	var modal = $('<div />').text('Das ist ein Beispieldialog... Er ist nun nicht wirklich sinnvoll.').appendTo('body').dialog({
+		autoOpen: false, 
+		width: 600, 
+		modal: true, 
+		resizable: false,
+		draggable: false,
+		title: 'Ein Beispiel',
+		buttons: { 
+			"Ok" : function() { modal.dialog('close'); },
+			"Abbrechen" : function() { modal.dialog('close'); }
+		},
+	});
+	
+	var nonmodal = $('<div />').text('Und ein weiterer Beispieldialog - wieder mal nicht so sinnvoll aber lehrreich.').appendTo('body').dialog({
+		autoOpen :	false,
+		width: 800,
+		title: 'Weiteres Beispiel',
+	});
+	
+	//Button Events festlegen
+	$('#modalerDialog').click(function () { modal.dialog('open'); });
+	$('#stdDialog').click(function () { nonmodal.dialog('open'); });
+	
+	//Startdialog aufrufen
+	var welcome = $('<div />').text('Willkommen auf meiner Seite! Dies ist die Lösung zur 32. Übungsaufgabe. Viel Spaß damit!').appendTo('body').dialog({
+		modal: true,
+		title: 'Willkommen',
+		buttons: {
+			"Schließen" : function() { welcome.dialog('close'); },
+		}
+	});
+});
+</script>
+</body>
+</html>

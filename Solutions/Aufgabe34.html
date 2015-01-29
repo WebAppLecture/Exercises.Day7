@@ -1,0 +1,36 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Lösung zur 34. Aufgabe</title>
+<style>
+#geo
+{
+	font-size: 20px;
+	width: 600px;
+	padding: 10px;
+	display: block;
+	color: #F00;
+	margin: auto;
+	text-align: center;
+	border: 1px solid #CCC;
+	border-radius: 10px;
+}
+</style>
+</head>
+<body>
+<input type="text" readonly id="geo" /><button onclick="readGeolocation();">Position ermitteln</button>
+<footer>&copy; <address style="display: inline;">Florian Rappl</address>. Zuletzt aktualisiert am <time datetime="2012-01-03T10:40Z" style="display: inline;">03.01.2012 um 11:40</time></footer>
+<script>
+function readGeolocation() {
+	navigator.geolocation.getCurrentPosition(geolocationPosition);
+}
+
+function geolocationPosition(position) {
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+	document.querySelector('#geo').value = 'BREITENGRAD: ' + lat + ', LÄNGENGRAD: ' + lon;
+}
+</script>
+</body>
+</html>

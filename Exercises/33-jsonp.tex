@@ -1,0 +1,19 @@
+\Exercise{JSONP - Mastered}
+%
+\par In dieser Aufgabe sollen Sie Fotos des Internet-Dienstes Flickr auslesen
+und die ersten drei Bilder darstellen. Dies soll über JSONP (und jQuery)
+erreicht werden. Hierfür werden Sie folgende Url benötigen:
+%
+\par \url{http://www.flickr.com/services/feeds/photos_public.gne}
+%
+\par Zusätzlich benötigen Sie noch die Parameter \jvar{jsoncallback=?} und
+\jvar{format=json}. Die von Flickr erhaltenen Daten geben ein normales JSON
+Objekt zurück, welches ein Array (genannt items) enthält. Folgende Daten für
+den $i$-ten Eintrag sind daher noch sinnvoll:
+%
+\begin{itemize}
+\item
+Link zu den Bild auf Flickr: \jvar{items[i].link}
+\item
+Quelle des Bildes: \jvar{items[i].media.m}
+\end{itemize}
